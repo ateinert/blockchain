@@ -3,6 +3,8 @@
 #include <netinet/in.h>
 #include <string>
 
+using namespace std;
+
 string sha256(string str)
 {
 	unsigned char hash[SHA256_DIGEST_LENGTH];
