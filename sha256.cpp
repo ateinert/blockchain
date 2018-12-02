@@ -28,7 +28,7 @@ string sha256_file(string path)
 	const int bufSize = 32768;
 	char *buffer = (char*)malloc(bufSize);
 	int bytesRead = 0;
-	if(!buffer) return ENOMEM;
+	//if(!buffer) return ENOMEM;
 	while((bytesRead = fread(buffer, 1, bufSize, file)))
 	{
 		SHA256_Update(&sha256, buffer, bytesRead);
