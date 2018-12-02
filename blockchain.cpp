@@ -357,7 +357,7 @@ void server()
 	// listen for block
 	msock2 = passiveTCP(BLOCK_PORT, QLEN);
 	// listen for chain
-	
+	(void) signal(SIGCHLD, reaper);
 	while (1)
 	{
 		alen = sizeof(fsin);
