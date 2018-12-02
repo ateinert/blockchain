@@ -13,7 +13,7 @@ all: blockchain
 	$(CXX) $(CFLAGS) -c $<
 
 blockchain: main.o $(OBJECTS)
-	$(CXX) $(CFLAGS) $(OBJECTS) $(OPT)
+	$(CXX) $(CFLAGS) main.o $(OBJECTS) $(OPT) \
 	-o blockchain
 
 clean:
