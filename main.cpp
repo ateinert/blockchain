@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <climits>
 #include <signal.h>
+#include <stdlib.h>
 #include "blockchain.h"
 
 #define BLOCK_PORT "2000"
