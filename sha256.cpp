@@ -1,6 +1,7 @@
 //sha256.cpp
 #include <openssl/sha.h>
 #include <netinet/in.h>
+#include <string>
 
 string sha256(string str)
 {
