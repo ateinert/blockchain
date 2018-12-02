@@ -74,6 +74,7 @@ int main(int argc, char **argv)
 	id.close();
 	
 	int pid;
+	(void) signal(SIGCHLD, reaper);
 	if (argc == 2 && strcmp(argv[1], "publisher"))
 	{
 		pid = fork();
@@ -99,7 +100,7 @@ int main(int argc, char **argv)
 			exit(0);
 		}
 	}
-	
+	(void) signal(SIGCHLD, reaper);
 	pid = fork();
 	
 	if (pid == 0)
