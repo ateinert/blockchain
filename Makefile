@@ -6,7 +6,7 @@ TAR=tar cvf
 
 INCS= -I. 
 #INCS= -I. -I/usr/include # to use HPUX with gcc
-OPTFLAGS=  -O4 -lssl -lcrypto -std=c++11
+OPTFLAGS=  -O4 -lssl -lcrypto -std=c++14
 OBJECTS= block.o transaction.o sha256.o
 OBJECTS1= connectTCP.o connectsock.o 
 OBJECTS2= passivesock.o passiveTCP.o
