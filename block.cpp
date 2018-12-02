@@ -2,6 +2,7 @@
 
 #include "blockchain.h"
 #include <string.h>
+#include <string>
 
 Block::Block()
 {
