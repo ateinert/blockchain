@@ -1,6 +1,6 @@
 CXX=g++
 #INCS= -I. -I/usr/include # to use HPUX with gcc
-OBJECTS= main.o block.o transaction.o sha256.o connectTCP.o connectsock.o passivesock.o passiveTCP.o errexit.o
+OBJECTS= block.o transaction.o sha256.o connectTCP.o connectsock.o passivesock.o passiveTCP.o errexit.o
 
 CFLAGS = -g -Wall -std=c++11 -O4
 OPT = -lssl -lcrypto
