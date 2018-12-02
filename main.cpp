@@ -53,6 +53,7 @@ int main(int argc, char **argv)
 	string temp;
 	if (!hosts.good())
 	{
+		cerr << "ERROR 11\n";
 		exit(1);
 	}
 	while(getline(hosts, temp))
@@ -64,9 +65,10 @@ int main(int argc, char **argv)
 	ifstream id;
 	id.open("chain/id");
 	if (!id.good())
-	{
+{
+		cerr << "ERROR 12\n";
 		exit(1);
-	}
+	} 
 	getline(id, temp);
 	string user_id = temp;
 	id.close();
