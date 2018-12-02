@@ -2,6 +2,7 @@
 #include <openssl/sha.h>
 #include <netinet/in.h>
 #include <string>
+#include <string.h>
 
 using namespace std;
 
