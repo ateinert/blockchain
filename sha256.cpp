@@ -13,7 +13,7 @@ string sha256(string str)
 	SHA256_Init(&sha256);
 	SHA256_Update(&sha256, str.c_str(), strlen(str.c_str()));
 	SHA256_Final(hash, &sha256);
-	string s = hash;
+	string s = (const char *)hash;
 	return s;
 }
 
@@ -34,7 +34,7 @@ string sha256_file(string path)
 		SHA256_Update(&sha256, buffer, bytesRead);
 	}
 	SHA256_Final(hash, &sha256);
-	string s(hash);
+	string s((const char *)hash);
 	fclose(file);
 	free(buffer);
 	return s;
