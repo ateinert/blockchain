@@ -11,37 +11,6 @@
 
 using namespace std;
 
-void userInterface(ostream& os, int blockCount, int currentTransactionCount);
-vector<Transaction> publishTransactions(string user_id, char* publisherID, char* gameID, int number, string socket, vector<string> hostList);
-
-Block recieveBlock(int);
-void broadcastBlock(Block, string, vector<string>);
-void saveBlockToFile(Block);
-Block loadBlockFromFile(string);
-
-void loadBlockCount();
-void updateBlockCount(int);
-void loadTransactionCount();
-void updateTransactionCount(int);
-void loadWallet();
-void updateWallet(vector<Transaction>);
-
-Transaction recieveTransaction(int);
-void broadcastTransaction(Transaction, string, vector<string>);
-void saveTransactionToFile(Transaction);
-Transaction loadTransactionFromFile(string);
-
-void server();
-void client(vector<string>, vector<Transaction>, string);
-
-int passiveTCP(const char*, int);
-int connectTCP(const char*, const char*);
-
-string sha256(string);
-string sha256_file(string);
-
-void reaper(int);
-
 class Block {
 	public:
 		Block();
@@ -80,3 +49,35 @@ class Transaction {
 		char license[129];
 		time_t creationTime;
 };
+
+void userInterface(ostream& os, int blockCount, int currentTransactionCount);
+vector<Transaction> publishTransactions(string user_id, char* publisherID, char* gameID, int number, string socket, vector<string> hostList);
+
+Block recieveBlock(int);
+void broadcastBlock(Block, string, vector<string>);
+void saveBlockToFile(Block);
+Block loadBlockFromFile(string);
+
+void loadBlockCount();
+void updateBlockCount(int);
+void loadTransactionCount();
+void updateTransactionCount(int);
+void loadWallet();
+void updateWallet(vector<Transaction>);
+
+Transaction recieveTransaction(int);
+void broadcastTransaction(Transaction, string, vector<string>);
+void saveTransactionToFile(Transaction);
+Transaction loadTransactionFromFile(string);
+
+void server();
+void client(vector<string>, vector<Transaction>, string);
+
+int passiveTCP(const char*, int);
+int connectTCP(const char*, const char*);
+
+string sha256(string);
+string sha256_file(string);
+
+void reaper(int);
+
