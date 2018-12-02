@@ -17,7 +17,7 @@ CFLAGS = -g -Wall -std=c++11
 
 all: blockchain
 
-.c.o:
+.cpp.o:
 	$(CXX) $(CFLAGS) -c $<
 
 blockchain: main.o $(OBJECTS2) $(OBJECTS1) $(OBJECTS) $(OBJECTS3)
