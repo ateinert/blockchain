@@ -3,6 +3,7 @@ CXX=g++
 RM= \rm -rf
 GZIP=gzip
 TAR=tar cvf
+OPTFLAGS=  -O4 -lssl -lcrypto
 #INCS= -I. -I/usr/include # to use HPUX with gcc
 OBJECTS= block.o transaction.o sha256.o
 OBJECTS1= connectTCP.o connectsock.o 
