@@ -16,7 +16,7 @@
 #include <netinet/in.h>
 #include "blockchain.h"
 
-#define	LINELEN	128
+#define LINELEN	128
 #define BLOCK_PORT "2000"
 #define TRANSACTION_PORT "2001"
 #define QLEN 5
