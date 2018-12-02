@@ -34,7 +34,7 @@ string sha256_file(string path)
 		SHA256_Update(&sha256, buffer, bytesRead);
 	}
 	SHA256_Final(hash, &sha256);
-	string s(hash)
+	string s(hash);
 	fclose(file);
 	free(buffer);
 	return s;
