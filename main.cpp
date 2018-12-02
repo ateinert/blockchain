@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 	id.close();
 	
 	int pid;
-	if (argc == 2 && argv[1] == "publisher")
+	if (argc == 2 && strcmp(argv[1], "publisher"))
 	{
 		pid = fork();
 		// create a fork to create new blocks
