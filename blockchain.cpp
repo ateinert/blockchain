@@ -98,12 +98,18 @@ Block recieveBlock(int fd)
 	cc = read(fd, &block, sizeof(Block));
 	//printf("recieved: %s, %d\n", buf,cc);
 	if (cc < 0)
+	{
+		cerr << "ERROR 1\n";
 		exit(1);
+	}
 	if (block.validate())
 	{
 		saveBlockToFile(block);
 		if (write(fd, validMssg, strlen(validMssg)) < 0)
+		{
+			cerr << "ERROR 2\n";
 			exit(1);
+		}
 		return block;
 	}
 }
@@ -121,12 +127,17 @@ void broadcastBlock(Block block, string sock, vector<string> hosts)
 		char *host = (char*)hosts[i].c_str();
 		s = connectTCP(host, sock.c_str());
 		if (write(s, &block, sizeof(Block)) < 0)
+		{
+			cerr << "ERROR 3\n";
 			exit(1);
-		
+		}
 		while (cc = read(s, buf, sizeof buf)) 
 		{
 			if (cc < 0)
+			{
+				cerr << "ERROR 4\n";
 				exit(1);
+			}
 			if(strncmp(buf,validMssg,strlen(validMssg))==0) 
 			{
 				//printf("File Recieved and Verified\n");
@@ -148,7 +159,10 @@ void saveBlockToFile(Block block)
 	if (file == NULL) 
 	{ 
 		fprintf(stderr, "\nError opening file\n"); 
-		exit (1); 
+		{
+			cerr << "ERROR 5\n";
+			exit(1);
+		} 
 	}
 	fwrite (&block, sizeof(Block), 1, file); 
 	if(fwrite == 0)  
@@ -188,12 +202,18 @@ Transaction recieveTransaction(int fd)
 	cc = read(fd, &trans, sizeof(Transaction));
 	//printf("recieved: %s, %d\n", buf,cc);
 	if (cc < 0)
+	{
+		cerr << "ERROR 6\n";
 		exit(1);
+	} 
 	if (trans.validate())
 	{
 		saveTransactionToFile(trans);
 		if (write(fd, validMssg, strlen(validMssg)) < 0)
+		{
+			cerr << "ERROR 7\n";
 			exit(1);
+		} 
 		return trans;
 	}
 }
@@ -210,12 +230,18 @@ void broadcastTransaction(Transaction trans, string sock, vector<string> hosts)
 		char *host = (char*)hosts[i].c_str();
 		s = connectTCP(host, sock.c_str());
 		if (write(s, &trans, sizeof(Transaction)) < 0)
+		{
+			cerr << "ERROR 8\n";
 			exit(1);
+		} 
 		
 		while (cc = read(s, buf, sizeof buf)) 
 		{
 			if (cc < 0)
+			{
+				cerr << "ERROR 9\n";
 				exit(1);
+			} 
 			if(strncmp(buf,validMssg,strlen(validMssg))==0) 
 			{
 				saveTransactionToFile(trans);
@@ -236,7 +262,10 @@ void saveTransactionToFile(Transaction trans)
 	if (file == NULL) 
 	{ 
 		fprintf(stderr, "\nError opening file\n"); 
-		exit (1); 
+		{
+			cerr << "ERROR 10\n";
+			exit(1);
+		} 
 	}
 	fwrite (&trans, sizeof(Transaction), 1, file); 
 	if(fwrite == 0)  
