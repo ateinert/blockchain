@@ -12,8 +12,8 @@ all: blockchain
 	$(CXX) $(CFLAGS) -c $<
 
 blockchain: main.o $(OBJECTS)
-	$(CXX) $(CFLAGS) main.o $(OBJECTS) \
-	-o main
+	$(CXX) $(CFLAGS) main.o $(OBJECTS)
+	-o blockchain
 
 clean:
 	rm -f *.o core *~ blockchain
