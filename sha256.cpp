@@ -1,8 +1,10 @@
 //sha256.cpp
 #include <openssl/sha.h>
-#include <netinet/in.h>
-#include <string>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <errno.h>
+#include <string>
 
 using namespace std;
 
