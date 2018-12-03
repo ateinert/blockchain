@@ -17,16 +17,13 @@
 #include <openssl/sha.h>
 #include "blockchain.h"
 
-#define LINELEN	128
+#define LINELEN 128
 #define BLOCK_PORT "2000"
 #define TRANSACTION_PORT "2001"
 #define QLEN 5
 
 Block recieveBlock(int fd)
 {
-	loadBlockCount();
-	updateBlockCount(blockCount + 1);
-	updateTransactionCount(0);
 	Block block;
 	char buf[BUFSIZ];
 	char endOfFile_Indicator[]="End of file\n";
@@ -52,7 +49,6 @@ Block recieveBlock(int fd)
 
 void broadcastBlock(Block block, char** hosts, char *sock, int numHosts)
 {
-	
 	char buf[LINELEN+1];		/* buffer for one line of text	*/
    	char endoffile[]="End of file\n";
 	int s, i, n, cc;			/* socket descriptor, read count*/
