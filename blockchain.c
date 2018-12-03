@@ -36,7 +36,7 @@ Block recieveBlock(int fd)
 	{
 		exit(1);
 	}
-	if (block.validate())
+	if (blockValidate(block))
 	{
 		saveBlockToFile(block);
 		if (write(fd, validMssg, strlen(validMssg)) < 0)
@@ -81,7 +81,7 @@ void broadcastBlock(Block block, char** hosts, char *sock, int numHosts)
 void saveBlockToFile(Block block)
 {
 	FILE *file;
-	file = fopen(block.title, "w");
+	file = fopen(block.blockTitle, "w");
 	//printf("Attempting to save block: %s\n", block.blockTitle);
 	if (file == NULL)
 	{ 
@@ -98,11 +98,11 @@ void saveBlockToFile(Block block)
 	fclose(file);
 }
 
-Block loadBlockFromFile(string str)
+Block loadBlockFromFile(char *str)
 {
 	Block block;
 	FILE *file;
-	file = fopen(str.c_str(), "r");
+	file = fopen(str, "r");
 	if (file == NULL) 
 	{ 
 		fprintf(stderr, "\nError opening file\n"); 
@@ -174,14 +174,11 @@ void broadcastTransaction(Transaction trans, char **hosts, char *sock, int numHo
 void saveTransactionToFile(Transaction trans)
 {
 	FILE *file;
-	string s = "chain/blocks/block" + to_string(blockCount) + "/" + to_string(transactionCount);
-	file = fopen(s.c_str(), "w");
-	//printf("Attempting to save block: %s\n", block.blockTitle);
+	file = fopen(trans.transactionTitle, "w");
 	if (file == NULL) 
 	{ 
 		fprintf(stderr, "\nError opening file\n"); 
 		{
-			cerr << "ERROR 10\n";
 			exit(1);
 		} 
 	}
