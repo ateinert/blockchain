@@ -18,20 +18,20 @@ typedef struct {
 } Transaction;
 
 Block recieveBlock(int);
-void broadcastBlock(Block, string, vector<string>);
+void broadcastBlock(Block, char**, char*);
 void saveBlockToFile(Block);
-Block loadBlockFromFile(string);
+Block loadBlockFromFile(char*);
 
 Transaction recieveTransaction(int);
-void broadcastTransaction(Transaction, string, vector<string>);
+void broadcastTransaction(Transaction, char**, char*);
 void saveTransactionToFile(Transaction);
-Transaction loadTransactionFromFile(string);
+Transaction loadTransactionFromFile(char*);
 
 int passiveTCP(const char*, int);
 int connectTCP(const char*, const char*);
 
-string sha256(string);
-string sha256_file(string);
+void sha256(char *, );
+int sha256_file(string);
 
 void reaper(int);
 
