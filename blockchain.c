@@ -13,50 +13,14 @@
 #include <stdlib.h> 
 #include <string.h>
 #include <netinet/in.h>
+#include <errno.h>
+#include <openssl/sha.h>
 #include "blockchain.h"
 
 #define LINELEN	128
 #define BLOCK_PORT "2000"
 #define TRANSACTION_PORT "2001"
 #define QLEN 5
-
-using namespace std;
-
-extern int blockCount, transactionCount;
-extern vector<Transaction> wallet;
-
-void loadBlockCount()
-{
-	//load it into memory
-	ifstream file;
-	file.open("chain/blockCount");
-	file >> blockCount;
-}
-
-void updateBlockCount(int count)
-{
-	// open the file and set it equal to count
-	ofstream file;
-	file.open("chain/blockCount");
-	file << count;
-	//then load it into memory
-	blockCount = count;
-}
-
-void loadTransactionCount()
-{
-	ifstream file;
-	file.open("chain/transactionCount");
-	file >> transactionCount;
-}
-
-void updateTransactionCount(int count)
-{
-	ofstream file;
-	file.open("chain/transactionCount");
-	file << count;
-	transactionCount = count;
-}
 
 Block recieveBlock(int fd)
 {
@@ -67,13 +31,12 @@ Block recieveBlock(int fd)
 	char buf[BUFSIZ];
 	char endOfFile_Indicator[]="End of file\n";
 	char validMssg[]="Block Valid\n";
-	int	cc;
+	int cc;
 	
 	cc = read(fd, &block, sizeof(Block));
 	//printf("recieved: %s, %d\n", buf,cc);
 	if (cc < 0)
 	{
-		cerr << "ERROR 1\n";
 		exit(1);
 	}
 	if (block.validate())
@@ -81,35 +44,32 @@ Block recieveBlock(int fd)
 		saveBlockToFile(block);
 		if (write(fd, validMssg, strlen(validMssg)) < 0)
 		{
-			cerr << "ERROR 2\n";
 			exit(1);
 		}
 		return block;
 	}
 }
 
-void broadcastBlock(Block block, string sock, vector<string> hosts)
+void broadcastBlock(Block block, char** hosts, char *sock, int numHosts)
 {
 	
 	char buf[LINELEN+1];		/* buffer for one line of text	*/
    	char endoffile[]="End of file\n";
-	int	s, i, n, cc;			/* socket descriptor, read count*/
-	int	outchars, inchars;	/* characters sent and received	*/
+	int s, i, n, cc;			/* socket descriptor, read count*/
+	int outchars, inchars;	/* characters sent and received	*/
 	char validMssg[]="Block Valid\n";
-	for (i = 0; i < hosts.size(); i++)
+	for (i = 0; i < numHosts; i++)
 	{
-		char *host = (char*)hosts[i].c_str();
-		s = connectTCP(host, sock.c_str());
+		char *host = hosts[i];
+		s = connectTCP(host, sock);
 		if (write(s, &block, sizeof(Block)) < 0)
 		{
-			cerr << "ERROR 3\n";
 			exit(1);
 		}
 		while (cc = read(s, buf, sizeof buf)) 
 		{
 			if (cc < 0)
 			{
-				cerr << "ERROR 4\n";
 				exit(1);
 			}
 			if(strncmp(buf,validMssg,strlen(validMssg))==0) 
@@ -125,23 +85,18 @@ void broadcastBlock(Block block, string sock, vector<string> hosts)
 void saveBlockToFile(Block block)
 {
 	FILE *file;
-	string s = "chain/blocks/block" + block.getTitle();
-	mkdir(s.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-	s = s + "/" + block.getTitle();
-	file = fopen(s.c_str(), "w");
+	file = fopen(block.title, "w");
 	//printf("Attempting to save block: %s\n", block.blockTitle);
-	if (file == NULL) 
+	if (file == NULL)
 	{ 
 		fprintf(stderr, "\nError opening file\n"); 
 		{
-			cerr << "ERROR 5\n";
 			exit(1);
 		} 
 	}
 	fwrite (&block, sizeof(Block), 1, file); 
 	if(fwrite == 0)  
 	{
-		printf("Error writing file\n"); 
 		exit (1);
 	}
 	fclose(file);
@@ -165,8 +120,6 @@ Block loadBlockFromFile(string str)
 
 Transaction recieveTransaction(int fd)
 {
-	loadTransactionCount();
-	updateTransactionCount(transactionCount + 1);
 	Transaction trans;
 	char buf[BUFSIZ];
 	char endOfFile_Indicator[]="End of file\n";
@@ -177,35 +130,32 @@ Transaction recieveTransaction(int fd)
 	//printf("recieved: %s, %d\n", buf,cc);
 	if (cc < 0)
 	{
-		cerr << "ERROR 6\n";
 		exit(1);
 	} 
-	if (trans.validate())
+	if (transactionValidate(trans))
 	{
 		saveTransactionToFile(trans);
 		if (write(fd, validMssg, strlen(validMssg)) < 0)
 		{
-			cerr << "ERROR 7\n";
 			exit(1);
 		} 
 		return trans;
 	}
 }
 
-void broadcastTransaction(Transaction trans, string sock, vector<string> hosts)
+void broadcastTransaction(Transaction trans, char **hosts, char *sock, int numHosts)
 {
 	char buf[LINELEN+1];		/* buffer for one line of text	*/
    	char endoffile[]="End of file\n";
-	int	s, i, n, cc;			/* socket descriptor, read count*/
-	int	outchars, inchars;	/* characters sent and received	*/
+	int s, i, n, cc;			/* socket descriptor, read count*/
+	int outchars, inchars;	/* characters sent and received	*/
 	char validMssg[]="Transaction Valid\n";
-	for (i = 0; i < hosts.size(); i++)
+	for (i = 0; i < numHosts; i++)
 	{
-		char *host = (char*)hosts[i].c_str();
+		char *host = hosts[i];
 		s = connectTCP(host, sock.c_str());
 		if (write(s, &trans, sizeof(Transaction)) < 0)
 		{
-			cerr << "ERROR 8\n";
 			exit(1);
 		} 
 		
@@ -213,7 +163,6 @@ void broadcastTransaction(Transaction trans, string sock, vector<string> hosts)
 		{
 			if (cc < 0)
 			{
-				cerr << "ERROR 9\n";
 				exit(1);
 			} 
 			if(strncmp(buf,validMssg,strlen(validMssg))==0) 
@@ -229,7 +178,6 @@ void broadcastTransaction(Transaction trans, string sock, vector<string> hosts)
 void saveTransactionToFile(Transaction trans)
 {
 	FILE *file;
-	loadBlockCount();
 	string s = "chain/blocks/block" + to_string(blockCount) + "/" + to_string(transactionCount);
 	file = fopen(s.c_str(), "w");
 	//printf("Attempting to save block: %s\n", block.blockTitle);
@@ -250,11 +198,11 @@ void saveTransactionToFile(Transaction trans)
 	fclose(file);
 }
 
-Transaction loadTransactionFromFile(string str)
+Transaction loadTransactionFromFile(char *str)
 {
 	Transaction trans;
 	FILE *file;
-	file = fopen(str.c_str(), "r");
+	file = fopen(str, "r");
 	if (file == NULL) 
 	{ 
 		fprintf(stderr, "\nError opening file\n"); 
@@ -265,6 +213,47 @@ Transaction loadTransactionFromFile(string str)
 	fclose(file); 
 	return trans;
 }
+ 
+void sha256(char *string, char outputBuffer[65])
+{
+	unsigned char hash[SHA256_DIGEST_LENGTH];
+	SHA256_CTX sha256;
+	SHA256_Init(&sha256);
+	SHA256_Update(&sha256, string, strlen(string));
+	SHA256_Final(hash, &sha256);
+	int i = 0;
+	for(i = 0; i < SHA256_DIGEST_LENGTH; i++)
+	{
+		sprintf(outputBuffer + (i * 2), "%02x", hash[i]);
+	}
+	outputBuffer[64] = 0;
+}
+
+int sha256_file(char *path, char outputBuffer[65])
+{
+	FILE *file = fopen(path, "rb");
+	if(!file) return -534;
+
+	unsigned char hash[SHA256_DIGEST_LENGTH];
+	SHA256_CTX sha256;
+	SHA256_Init(&sha256);
+	const int bufSize = 32768;
+	char *buffer = (char*)malloc(bufSize);
+	int bytesRead = 0;
+	if(!buffer) return ENOMEM;
+	while((bytesRead = fread(buffer, 1, bufSize, file)))
+	{
+		SHA256_Update(&sha256, buffer, bytesRead);
+	}
+	SHA256_Final(hash, &sha256);
+	int i;
+	for(i = 0; i < SHA256_DIGEST_LENGTH; i++)
+	{
+		sprintf(outputBuffer + (i * 2), "%02x", hash[i]);
+	}
+	fclose(file);
+	free(buffer);
+	return 0;
 
 void reaper(int sig)
 {
