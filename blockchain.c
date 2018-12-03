@@ -22,6 +22,49 @@
 #define TRANSACTION_PORT "2001"
 #define QLEN 5
 
+void server(char *service)
+{
+	int msock;;
+	int ssock;
+	int alen;
+	sockaddr_in fsin;
+	
+	// listen for transaction
+	msock = passiveTCP(service, QLEN);
+	// listen for block
+	// listen for chain
+	(void) signal(SIGCHLD, reaper);
+	while (1)
+	{
+		alen = sizeof(fsin);
+		ssock = accept(msock1, (sockaddr *)&fsin, (socklen_t *)&alen);
+		if (ssock < 0) 
+		{
+			if (errno == EINTR)   //system call was interrupted permaturely with a signal before it was able to complete
+				continue;
+			cerr << "socket failure" << endl;
+			exit(EXIT_FAILURE);
+		}
+		switch (fork()) 
+		{
+			case 0:		/* child */
+				(void) close(msock);
+				recieveBlock(ssock);
+				int i = 0;
+				for (; i < 10; i++)
+				{
+					recieveTransaction(ssock)	
+				}
+				exit(0);
+			default:	/* parent */
+				(void) close(ssock);
+				break;
+			case -1:
+				exit(1);
+		}
+	}
+}
+
 Block recieveBlock(int fd)
 {
 	Block block;
