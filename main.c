@@ -61,7 +61,8 @@ int main(int argc, char **argv)
 			for (i = 0; i < 10; i++)
 			{
 				strcpy(buffer, "0");
-				Transaction trans = createTransaction(transactioncount, blockcount, buffer);
+				Transaction trans = createTransaction(transactioncount, blockcount, buffer, id, license);
+				broadcastTransaction(trans, hosts, service, numHosts);
 				transactioncount++;
 			}
 		}
@@ -71,6 +72,5 @@ int main(int argc, char **argv)
 		
 		exit(EXIT_FAILURE);
 	}
-	//system ("rm -rf chain/blocks");
 	return 0;
 }
