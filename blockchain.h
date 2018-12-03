@@ -17,6 +17,9 @@ typedef struct {
 	time_t creationTime;
 } Transaction;
 
+int blockValidate(Block);
+int transactionValidate(Transaction);
+
 Block recieveBlock(int);
 void broadcastBlock(Block, char**, char*);
 void saveBlockToFile(Block);
