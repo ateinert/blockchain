@@ -30,8 +30,8 @@ Transaction loadTransactionFromFile(char*);
 int passiveTCP(const char*, int);
 int connectTCP(const char*, const char*);
 
-void sha256(char *, );
-int sha256_file(string);
+void sha256(char *string, char outputBuffer[65]);
+int sha256_file(char *path, char outputBuffer[65]);
 
 void reaper(int);
 
